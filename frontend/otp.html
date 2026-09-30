@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>AI-NIDS | Two-Step Verification</title>
+
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+
+        body {
+
+            min-height: 100vh;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            color: white;
+
+            overflow: hidden;
+
+            background:
+                radial-gradient(
+                    circle at 20% 20%,
+                    rgba(37,99,235,0.25),
+                    transparent 30%
+                ),
+
+                radial-gradient(
+                    circle at 80% 80%,
+                    rgba(6,182,212,0.20),
+                    transparent 30%
+                ),
+
+                #050b16;
+
+        }
+
+
+        body::before {
+
+            content: "";
+
+            position: fixed;
+
+            inset: 0;
+
+            background-image:
+
+                linear-gradient(
+                    rgba(59,130,246,0.04) 1px,
+                    transparent 1px
+                ),
+
+                linear-gradient(
+                    90deg,
+                    rgba(59,130,246,0.04) 1px,
+                    transparent 1px
+                );
+
+            background-size: 45px 45px;
+
+            pointer-events: none;
+
+        }
+
+
+        .wrapper {
+
+            width: 100%;
+
+            max-width: 460px;
+
+            padding: 20px;
+
+            position: relative;
+
+            z-index: 2;
+
+        }
+
+
+        .brand {
+
+            text-align: center;
+
+            margin-bottom: 22px;
+
+        }
+
+
+        .shield {
+
+            width: 75px;
+
+            height: 75px;
+
+            margin: auto;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border-radius: 22px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #2563eb,
+                    #06b6d4
+                );
+
+            box-shadow:
+                0 0 35px
+                rgba(37,99,235,0.35);
+
+            font-size: 40px;
+
+        }
+
+
+        .brand h1 {
+
+            margin-top: 15px;
+
+            font-size: 30px;
+
+            letter-spacing: 2px;
+
+        }
+
+
+        .brand p {
+
+            margin-top: 7px;
+
+            color: #8ea0b8;
+
+            font-size: 13px;
+
+        }
+
+
+        .otp-card {
+
+            background:
+                rgba(12,22,39,0.96);
+
+            border:
+                1px solid
+                rgba(148,163,184,0.14);
+
+            border-radius: 20px;
+
+            padding: 32px;
+
+            box-shadow:
+                0 25px 70px
+                rgba(0,0,0,0.5);
+
+            text-align: center;
+
+        }
+
+
+        .verification-icon {
+
+            font-size: 45px;
+
+            margin-bottom: 12px;
+
+        }
+
+
+        h2 {
+
+            font-size: 22px;
+
+            margin-bottom: 9px;
+
+        }
+
+
+        .description {
+
+            color: #7f91aa;
+
+            font-size: 13px;
+
+            line-height: 1.6;
+
+            margin-bottom: 25px;
+
+        }
+
+
+        .user-info {
+
+            display: inline-block;
+
+            padding: 7px 13px;
+
+            border-radius: 20px;
+
+            background:
+                rgba(37,99,235,0.1);
+
+            border:
+                1px solid
+                rgba(59,130,246,0.18);
+
+            color: #93c5fd;
+
+            font-size: 12px;
+
+            margin-bottom: 22px;
+
+        }
+
+
+        .otp-input {
+
+            width: 100%;
+
+            height: 62px;
+
+            border-radius: 12px;
+
+            border:
+                1px solid #26364d;
+
+            background: #081221;
+
+            color: white;
+
+            outline: none;
+
+            text-align: center;
+
+            font-size: 28px;
+
+            font-weight: bold;
+
+            letter-spacing: 10px;
+
+            padding-left: 10px;
+
+            transition: 0.2s;
+
+        }
+
+
+        .otp-input::placeholder {
+
+            color: #34445a;
+
+            letter-spacing: 8px;
+
+        }
+
+
+        .otp-input:focus {
+
+            border-color: #3b82f6;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(59,130,246,0.12);
+
+        }
+
+
+        .verify-btn {
+
+            width: 100%;
+
+            height: 50px;
+
+            margin-top: 18px;
+
+            border: none;
+
+            border-radius: 10px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #2563eb,
+                    #0891b2
+                );
+
+            color: white;
+
+            font-size: 15px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+
+        }
+
+
+        .verify-btn:hover {
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 12px 30px
+                rgba(37,99,235,0.28);
+
+        }
+
+
+        .verify-btn:disabled {
+
+            opacity: 0.65;
+
+            cursor: wait;
+
+            transform: none;
+
+        }
+
+
+        .message {
+
+            min-height: 20px;
+
+            margin-top: 16px;
+
+            font-size: 13px;
+
+        }
+
+
+        .security-box {
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            gap: 8px;
+
+            margin-top: 24px;
+
+            padding-top: 20px;
+
+            border-top:
+                1px solid
+                rgba(148,163,184,0.1);
+
+            color: #7dd3fc;
+
+            font-size: 12px;
+
+        }
+
+
+        .status-dot {
+
+            width: 8px;
+
+            height: 8px;
+
+            border-radius: 50%;
+
+            background: #22c55e;
+
+            box-shadow:
+                0 0 10px #22c55e;
+
+        }
+
+
+        .back {
+
+            display: inline-block;
+
+            margin-top: 20px;
+
+            color: #64748b;
+
+            font-size: 12px;
+
+            text-decoration: none;
+
+            cursor: pointer;
+
+        }
+
+
+        .back:hover {
+
+            color: #93c5fd;
+
+        }
+
+
+        .footer {
+
+            text-align: center;
+
+            margin-top: 20px;
+
+            color: #506078;
+
+            font-size: 11px;
+
+        }
+
+
+        @media(max-width:500px) {
+
+            .otp-card {
+
+                padding: 25px;
+
+            }
+
+            .brand h1 {
+
+                font-size: 26px;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="wrapper">
+
+
+    <div class="brand">
+
+        <div class="shield">
+            🛡️
+        </div>
+
+        <h1>
+            AI-NIDS
+        </h1>
+
+        <p>
+            INTELLIGENT NETWORK SECURITY CENTER
+        </p>
+
+    </div>
+
+
+    <div class="otp-card">
+
+
+        <div class="verification-icon">
+            🔐
+        </div>
+
+
+        <h2>
+            Verify Your Identity
+        </h2>
+
+
+        <p class="description">
+
+            Two-step verification is required
+            before accessing the AI-NIDS security dashboard.
+
+        </p>
+
+
+        <div
+            class="user-info"
+            id="userInfo">
+
+            👤 Security Administrator
+
+        </div>
+
+
+        <form id="otpForm">
+
+
+            <input
+
+                type="text"
+
+                id="otp"
+
+                class="otp-input"
+
+                placeholder="••••••"
+
+                maxlength="6"
+
+                inputmode="numeric"
+
+                autocomplete="one-time-code"
+
+                required
+
+            >
+
+
+            <button
+                type="submit"
+                class="verify-btn"
+                id="verifyButton">
+
+                ✓ VERIFY & ENTER
+
+            </button>
+
+
+        </form>
+
+
+        <div
+            id="message"
+            class="message">
+        </div>
+
+
+        <div class="security-box">
+
+            <span class="status-dot"></span>
+
+            TWO-STEP SECURITY ACTIVE
+
+        </div>
+
+
+        <a
+            class="back"
+            onclick="goBack()">
+
+            ← Back to Login
+
+        </a>
+
+
+    </div>
+
+
+    <div class="footer">
+
+        AI-Based Intelligent Network Intrusion Detection and Response System
+
+    </div>
+
+
+</div>
+
+
+<script>
+
+
+/* Check login */
+
+if(
+    sessionStorage.getItem(
+        "login_verified"
+    ) === null
+) {
+
+    window.location.href =
+        "/login";
+
+}
+
+
+/* Show username */
+
+const username =
+    sessionStorage.getItem(
+        "username"
+    );
+
+
+if(username) {
+
+    document
+        .getElementById("userInfo")
+        .textContent =
+            "👤 " + username;
+
+}
+
+
+/* OTP input */
+
+document
+    .getElementById("otp")
+    .addEventListener(
+        "input",
+        function() {
+
+            this.value =
+                this.value
+                .replace(
+                    /[^0-9]/g,
+                    ""
+                );
+
+        }
+    );
+
+
+/* Verify OTP */
+
+document
+    .getElementById("otpForm")
+    .addEventListener(
+        "submit",
+        async function(event) {
+
+            event.preventDefault();
+
+
+            const otp =
+                document
+                .getElementById("otp")
+                .value;
+
+
+            const message =
+                document
+                .getElementById("message");
+
+
+            const button =
+                document
+                .getElementById("verifyButton");
+
+
+            if(otp.length !== 6) {
+
+                message.textContent =
+                    "Please enter the complete 6-digit OTP.";
+
+                message.style.color =
+                    "#f87171";
+
+                return;
+
+            }
+
+
+            button.disabled = true;
+
+            button.textContent =
+                "⏳ VERIFYING...";
+
+
+            message.textContent =
+                "Checking verification code...";
+
+            message.style.color =
+                "#facc15";
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/api/verify-otp",
+                        {
+
+                            method: "POST",
+
+                            headers: {
+
+                                "Content-Type":
+                                    "application/json"
+
+                            },
+
+                            body: JSON.stringify({
+
+                                otp: otp
+
+                            })
+
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if(data.success) {
+
+                    sessionStorage.setItem(
+                        "login_verified",
+                        "true"
+                    );
+
+
+                    message.textContent =
+                        "✓ Verification successful.";
+
+                    message.style.color =
+                        "#4ade80";
+
+
+                    setTimeout(
+                        function() {
+
+                            window.location.href =
+                                "/";
+
+                        },
+                        500
+                    );
+
+                }
+
+                else {
+
+                    message.textContent =
+                        data.message ||
+                        "Invalid verification code.";
+
+                    message.style.color =
+                        "#f87171";
+
+                    button.disabled =
+                        false;
+
+                    button.textContent =
+                        "✓ VERIFY & ENTER";
+
+                }
+
+            }
+
+            catch(error) {
+
+                console.error(error);
+
+                message.textContent =
+                    "Unable to connect to the server.";
+
+                message.style.color =
+                    "#f87171";
+
+                button.disabled =
+                    false;
+
+                button.textContent =
+                    "✓ VERIFY & ENTER";
+
+            }
+
+        }
+    );
+
+
+/* Back */
+
+function goBack() {
+
+    sessionStorage.clear();
+
+    window.location.href =
+        "/login";
+
+}
+
+</script>
+
+</body>
+
+</html>

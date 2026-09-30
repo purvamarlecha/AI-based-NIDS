@@ -1,0 +1,22 @@
+# Python virtual environments
+venv/
+.venv/
+env/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# IDE and system files
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Secrets
+.env
+
+# Temporary files
+*.log
+.ipynb_checkpoints/
+
+# Large ML artifacts - only if not needed in Git

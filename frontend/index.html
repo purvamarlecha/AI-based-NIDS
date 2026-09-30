@@ -1,0 +1,3447 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>AI-NIDS Security Dashboard</title>
+
+<style>
+
+/* =========================================================
+   GLOBAL
+========================================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", Arial, sans-serif;
+}
+
+body {
+
+    background:
+        radial-gradient(
+            circle at top right,
+            rgba(37,99,235,0.15),
+            transparent 35%
+        ),
+        #070b14;
+
+    color: #e5e7eb;
+
+    min-height: 100vh;
+}
+
+
+/* =========================================================
+   APP
+========================================================= */
+
+.app {
+
+    display: flex;
+
+    min-height: 100vh;
+}
+
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+
+.sidebar {
+
+    width: 250px;
+
+    position: fixed;
+
+    left: 0;
+    top: 0;
+    bottom: 0;
+
+    padding: 25px 18px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #0d1424,
+            #090e19
+        );
+
+    border-right: 1px solid #1f2937;
+
+    z-index: 100;
+}
+
+.logo {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding:
+        5px
+        10px
+        30px;
+}
+
+.logo-icon {
+
+    width: 45px;
+    height: 45px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #06b6d4
+        );
+
+    font-size: 23px;
+
+    box-shadow:
+        0 0 25px
+        rgba(37,99,235,0.35);
+}
+
+.logo h2 {
+
+    color: white;
+
+    font-size: 19px;
+}
+
+.logo span {
+
+    display: block;
+
+    color: #64748b;
+
+    font-size: 11px;
+
+    margin-top: 3px;
+}
+
+.menu-title {
+
+    color: #475569;
+
+    font-size: 11px;
+
+    text-transform: uppercase;
+
+    letter-spacing: 1px;
+
+    padding:
+        15px
+        12px
+        10px;
+}
+
+.menu-item {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 13px;
+
+    padding:
+        13px
+        14px;
+
+    border-radius: 10px;
+
+    color: #94a3b8;
+
+    margin-bottom: 5px;
+
+    cursor: pointer;
+
+    transition: 0.25s;
+}
+
+.menu-item:hover {
+
+    background: #111c31;
+
+    color: white;
+
+    transform: translateX(3px);
+}
+
+.menu-item.active {
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(37,99,235,0.25),
+            rgba(6,182,212,0.08)
+        );
+
+    color: #60a5fa;
+
+    border-left:
+        3px solid #3b82f6;
+}
+
+.menu-icon {
+
+    width: 20px;
+
+    text-align: center;
+}
+
+
+/* =========================================================
+   MAIN
+========================================================= */
+
+.main {
+
+    margin-left: 250px;
+
+    width:
+        calc(100% - 250px);
+
+    padding:
+        28px 35px;
+}
+
+
+/* =========================================================
+   TOP BAR
+========================================================= */
+
+.topbar {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    margin-bottom: 28px;
+}
+
+.page-title h1 {
+
+    font-size: 28px;
+
+    color: white;
+}
+
+.page-title p {
+
+    color: #64748b;
+
+    margin-top: 5px;
+
+    font-size: 14px;
+}
+
+.system-status {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    background: #0d1728;
+
+    border:
+        1px solid #1e293b;
+
+    padding:
+        10px 15px;
+
+    border-radius: 30px;
+
+    font-size: 13px;
+}
+
+.status-dot {
+
+    width: 9px;
+    height: 9px;
+
+    background: #22c55e;
+
+    border-radius: 50%;
+
+    box-shadow:
+        0 0 12px
+        #22c55e;
+
+    animation:
+        pulse 1.7s infinite;
+}
+
+@keyframes pulse {
+
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: .45;
+        transform: scale(.8);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+
+/* =========================================================
+   STATISTICS
+========================================================= */
+
+.stats {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 18px;
+
+    margin-bottom: 25px;
+}
+
+.stat-card {
+
+    background:
+        linear-gradient(
+            145deg,
+            #101827,
+            #0c1320
+        );
+
+    border:
+        1px solid #1e293b;
+
+    border-radius: 15px;
+
+    padding: 20px;
+
+    position: relative;
+
+    overflow: hidden;
+
+    transition: .3s;
+}
+
+.stat-card:hover {
+
+    transform:
+        translateY(-4px);
+
+    border-color:
+        #334155;
+
+    box-shadow:
+        0 15px 35px
+        rgba(0,0,0,.25);
+}
+
+.stat-top {
+
+    display: flex;
+
+    justify-content:
+        space-between;
+
+    align-items:
+        center;
+}
+
+.stat-title {
+
+    color: #94a3b8;
+
+    font-size: 13px;
+}
+
+.stat-icon {
+
+    width: 38px;
+    height: 38px;
+
+    border-radius: 10px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background: #111f38;
+
+    font-size: 18px;
+}
+
+.stat-value {
+
+    font-size: 30px;
+
+    font-weight: 700;
+
+    margin-top: 15px;
+
+    color: white;
+}
+
+.stat-sub {
+
+    margin-top: 6px;
+
+    color: #64748b;
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   CONTENT GRID
+========================================================= */
+
+.content-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        1.5fr 1fr;
+
+    gap: 20px;
+}
+
+.panel {
+
+    background:
+        linear-gradient(
+            145deg,
+            #101827,
+            #0c1320
+        );
+
+    border:
+        1px solid #1e293b;
+
+    border-radius: 15px;
+
+    padding: 22px;
+}
+
+.panel-header {
+
+    display: flex;
+
+    justify-content:
+        space-between;
+
+    align-items:
+        center;
+
+    margin-bottom: 20px;
+}
+
+.panel-header h2 {
+
+    font-size: 17px;
+
+    color: white;
+}
+
+.panel-header span {
+
+    color: #64748b;
+
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   TRAFFIC GRAPH
+========================================================= */
+
+.chart {
+
+    height: 240px;
+
+    display: flex;
+
+    align-items: flex-end;
+
+    gap: 9px;
+
+    padding:
+        15px 5px 0;
+}
+
+.bar {
+
+    flex: 1;
+
+    min-height: 15px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #38bdf8,
+            #2563eb
+        );
+
+    border-radius:
+        5px 5px 2px 2px;
+
+    opacity: .8;
+
+    transition:
+        height .5s,
+        opacity .3s;
+
+    position: relative;
+}
+
+.bar:hover {
+
+    opacity: 1;
+}
+
+.bar::after {
+
+    content:
+        attr(data-value);
+
+    position: absolute;
+
+    top: -20px;
+
+    left: 50%;
+
+    transform:
+        translateX(-50%);
+
+    font-size: 9px;
+
+    color: #64748b;
+}
+
+
+/* =========================================================
+   THREAT OVERVIEW
+========================================================= */
+
+.threat-list {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 16px;
+}
+
+.threat-item {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content:
+        space-between;
+}
+
+.threat-info {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+}
+
+.threat-circle {
+
+    width: 38px;
+    height: 38px;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background: #172033;
+}
+
+.threat-name {
+
+    font-size: 13px;
+
+    color: #cbd5e1;
+}
+
+.threat-count {
+
+    font-weight: bold;
+
+    color: white;
+}
+
+.progress {
+
+    width: 100px;
+
+    height: 5px;
+
+    background: #1e293b;
+
+    border-radius: 5px;
+
+    margin-top: 5px;
+}
+
+.progress span {
+
+    display: block;
+
+    height: 100%;
+
+    border-radius: 5px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #2563eb,
+            #06b6d4
+        );
+
+    transition:
+        width .5s;
+}
+
+
+/* =========================================================
+   XAI BOX
+========================================================= */
+
+.xai-box {
+
+    margin-top: 20px;
+
+    padding: 18px;
+
+    border-radius: 12px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #101d32,
+            #0c1727
+        );
+
+    border:
+        1px solid #1d4ed8;
+}
+
+.xai-title {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    color: #60a5fa;
+
+    font-weight: bold;
+
+    font-size: 13px;
+
+    margin-bottom: 10px;
+}
+
+.xai-text {
+
+    color: #94a3b8;
+
+    line-height: 1.6;
+
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   ALERTS
+========================================================= */
+
+.alerts-panel {
+
+    margin-top: 20px;
+}
+
+.alert {
+
+    display: grid;
+
+    grid-template-columns:
+        50px 1fr auto;
+
+    align-items: center;
+
+    gap: 15px;
+
+    padding: 14px;
+
+    border-bottom:
+        1px solid #172033;
+
+    transition: .2s;
+
+    cursor: pointer;
+}
+
+.alert:hover {
+
+    background: #111b2d;
+
+    border-radius: 8px;
+}
+
+.alert:last-child {
+
+    border-bottom: none;
+}
+
+.alert-icon {
+
+    width: 42px;
+    height: 42px;
+
+    border-radius: 10px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background: #2a1115;
+
+    color: #ef4444;
+}
+
+.alert-main strong {
+
+    color: #e2e8f0;
+
+    font-size: 13px;
+}
+
+.alert-main p {
+
+    color: #64748b;
+
+    font-size: 11px;
+
+    margin-top: 5px;
+}
+
+.severity {
+
+    padding:
+        5px 9px;
+
+    border-radius: 6px;
+
+    font-size: 10px;
+
+    font-weight: bold;
+}
+
+.critical {
+
+    background: #3b1117;
+
+    color: #f87171;
+}
+
+.high {
+
+    background: #38220e;
+
+    color: #fb923c;
+}
+
+.medium {
+
+    background: #302b0d;
+
+    color: #facc15;
+}
+
+.low {
+
+    background: #0d2b20;
+
+    color: #4ade80;
+}
+
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+.button-row {
+
+    display: flex;
+
+    gap: 10px;
+
+    margin-bottom: 15px;
+}
+
+.btn {
+
+    border: none;
+
+    padding:
+        9px 15px;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    color: white;
+
+    font-size: 12px;
+
+    transition: .2s;
+}
+
+.btn:hover {
+
+    transform:
+        translateY(-2px);
+}
+
+.btn-blue {
+
+    background: #2563eb;
+}
+
+.btn-red {
+
+    background: #dc2626;
+}
+
+.btn-gray {
+
+    background: #334155;
+}
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+.modal {
+
+    position: fixed;
+
+    inset: 0;
+
+    background:
+        rgba(0,0,0,.72);
+
+    display: none;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 20px;
+
+    z-index: 1000;
+
+    backdrop-filter:
+        blur(5px);
+}
+
+.modal.show {
+
+    display: flex;
+}
+
+.modal-box {
+
+    width: 95%;
+
+    max-width: 850px;
+
+    max-height: 90vh;
+
+    overflow-y: auto;
+
+    background:
+        linear-gradient(
+            145deg,
+            #111827,
+            #0b1220
+        );
+
+    border:
+        1px solid #334155;
+
+    border-radius: 18px;
+
+    padding: 25px;
+
+    box-shadow:
+        0 25px 80px
+        rgba(0,0,0,.5);
+
+    animation:
+        modalIn .25s ease;
+}
+
+@keyframes modalIn {
+
+    from {
+
+        opacity: 0;
+
+        transform:
+            translateY(20px)
+            scale(.97);
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform:
+            translateY(0)
+            scale(1);
+    }
+}
+
+.modal-header {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content:
+        space-between;
+
+    margin-bottom: 20px;
+}
+
+.modal-header h2 {
+
+    color: white;
+
+    font-size: 20px;
+}
+
+.close-btn {
+
+    width: 35px;
+    height: 35px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: #ef4444;
+
+    color: white;
+
+    font-size: 20px;
+
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   DETAIL GRID
+========================================================= */
+
+.detail-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap: 12px;
+
+    margin-bottom: 20px;
+}
+
+.detail-card {
+
+    background: #0c1626;
+
+    border:
+        1px solid #1e293b;
+
+    border-radius: 10px;
+
+    padding: 14px;
+}
+
+.detail-card small {
+
+    display: block;
+
+    color: #64748b;
+
+    font-size: 10px;
+
+    margin-bottom: 6px;
+
+    text-transform:
+        uppercase;
+}
+
+.detail-card strong {
+
+    color: white;
+
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   FEATURE BARS
+========================================================= */
+
+.feature {
+
+    margin-bottom: 15px;
+}
+
+.feature-top {
+
+    display: flex;
+
+    justify-content:
+        space-between;
+
+    margin-bottom: 6px;
+
+    font-size: 12px;
+}
+
+.feature-name {
+
+    color: #cbd5e1;
+}
+
+.feature-value {
+
+    color: #60a5fa;
+}
+
+.feature-bar {
+
+    height: 8px;
+
+    width: 100%;
+
+    background: #1e293b;
+
+    border-radius: 10px;
+
+    overflow: hidden;
+}
+
+.feature-fill {
+
+    height: 100%;
+
+    background:
+        linear-gradient(
+            90deg,
+            #2563eb,
+            #06b6d4
+        );
+
+    border-radius: 10px;
+
+    transition:
+        width .6s;
+}
+
+
+/* =========================================================
+   RECOMMENDATION
+========================================================= */
+
+.recommendation {
+
+    margin-top: 20px;
+
+    padding: 16px;
+
+    background:
+        rgba(37,99,235,.08);
+
+    border:
+        1px solid #1d4ed8;
+
+    border-radius: 10px;
+
+    color: #cbd5e1;
+
+    line-height: 1.6;
+
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   HISTORY TABLE
+========================================================= */
+
+.history-table {
+
+    width: 100%;
+
+    border-collapse:
+        collapse;
+
+    margin-top: 15px;
+}
+
+.history-table th {
+
+    text-align: left;
+
+    padding: 12px;
+
+    background: #111c31;
+
+    color: #94a3b8;
+
+    font-size: 11px;
+}
+
+.history-table td {
+
+    padding: 12px;
+
+    border-bottom:
+        1px solid #1e293b;
+
+    font-size: 12px;
+
+    color: #cbd5e1;
+}
+
+.history-table tr {
+
+    cursor: pointer;
+
+    transition: .2s;
+}
+
+.history-table tbody tr:hover {
+
+    background: #111c31;
+}
+
+.type-ddos {
+
+    color: #f87171;
+
+    font-weight: bold;
+}
+
+.type-portscan {
+
+    color: #fb923c;
+
+    font-weight: bold;
+}
+
+.type-benign {
+
+    color: #4ade80;
+
+    font-weight: bold;
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.footer {
+
+    text-align: center;
+
+    color: #475569;
+
+    font-size: 11px;
+
+    padding: 25px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width:1100px) {
+
+    .stats {
+
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+
+    .content-grid {
+
+        grid-template-columns:1fr;
+    }
+}
+
+@media(max-width:700px) {
+
+    .sidebar {
+
+        width: 70px;
+
+        padding:
+            15px 8px;
+    }
+
+    .logo h2,
+    .logo span,
+    .menu-title,
+    .menu-item span {
+
+        display: none;
+    }
+
+    .logo {
+
+        justify-content:
+            center;
+
+        padding-bottom:20px;
+    }
+
+    .menu-item {
+
+        justify-content:
+            center;
+    }
+
+    .main {
+
+        margin-left:70px;
+
+        width:
+            calc(100% - 70px);
+
+        padding:20px;
+    }
+
+    .stats {
+
+        grid-template-columns:
+            1fr;
+    }
+
+    .detail-grid {
+
+        grid-template-columns:
+            1fr;
+    }
+
+    .history-table {
+
+        font-size:10px;
+    }
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="app">
+
+
+<!-- =====================================================
+     SIDEBAR
+===================================================== -->
+
+<aside class="sidebar">
+
+    <div class="logo">
+
+        <div class="logo-icon">
+            🛡️
+        </div>
+
+        <div>
+
+            <h2>AI-NIDS</h2>
+
+            <span>
+                Security Center
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="menu-title">
+        Monitoring
+    </div>
+
+
+    <div
+        class="menu-item active"
+        onclick="scrollToSection('dashboardSection')">
+
+        <div class="menu-icon">
+            📊
+        </div>
+
+        <span>
+            Dashboard
+        </span>
+
+    </div>
+
+
+    <div
+        class="menu-item"
+        onclick="showHistory()">
+
+        <div class="menu-icon">
+            📜
+        </div>
+
+        <span>
+            Attack History
+        </span>
+
+    </div>
+
+
+    <div
+        class="menu-item"
+        onclick="showLatestXAI()">
+
+        <div class="menu-icon">
+            🧠
+        </div>
+
+        <span>
+            AI Explanation
+        </span>
+
+    </div>
+
+
+    <div
+        class="menu-item"
+        onclick="scrollToSection('alertsSection')">
+
+        <div class="menu-icon">
+            🚨
+        </div>
+
+        <span>
+            Threat Detection
+        </span>
+
+    </div>
+
+
+    <div class="menu-title">
+        System
+    </div>
+
+
+    <div
+        class="menu-item"
+        onclick="loadEverything()">
+
+        <div class="menu-icon">
+            🔄
+        </div>
+
+        <span>
+            Refresh Data
+        </span>
+
+    </div>
+
+</aside>
+
+
+
+<!-- =====================================================
+     MAIN
+===================================================== -->
+
+<main class="main"
+      id="dashboardSection">
+
+
+<!-- TOPBAR -->
+
+<div class="topbar">
+
+    <div class="page-title">
+
+        <h1>
+            Security Overview
+        </h1>
+
+        <p>
+            AI-powered network intrusion monitoring
+        </p>
+
+    </div>
+
+
+    <div class="system-status">
+
+        <div class="status-dot"
+             id="statusDot">
+        </div>
+
+        <span id="systemStatus">
+            Checking...
+        </span>
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     STATISTICS
+===================================================== -->
+
+<section class="stats">
+
+
+    <div class="stat-card">
+
+        <div class="stat-top">
+
+            <div class="stat-title">
+                Total Events
+            </div>
+
+            <div class="stat-icon">
+                📡
+            </div>
+
+        </div>
+
+        <div
+            class="stat-value"
+            id="totalEvents">
+
+            0
+
+        </div>
+
+        <div class="stat-sub">
+            Network events monitored
+        </div>
+
+    </div>
+
+
+
+    <div class="stat-card">
+
+        <div class="stat-top">
+
+            <div class="stat-title">
+                Threats Detected
+            </div>
+
+            <div class="stat-icon">
+                🚨
+            </div>
+
+        </div>
+
+        <div
+            class="stat-value"
+            id="threats">
+
+            0
+
+        </div>
+
+        <div class="stat-sub">
+            Malicious events detected
+        </div>
+
+    </div>
+
+
+
+    <div class="stat-card">
+
+        <div class="stat-top">
+
+            <div class="stat-title">
+                DDoS Attacks
+            </div>
+
+            <div class="stat-icon">
+                ⚡
+            </div>
+
+        </div>
+
+        <div
+            class="stat-value"
+            id="ddos">
+
+            0
+
+        </div>
+
+        <div class="stat-sub">
+            DDoS activity detected
+        </div>
+
+    </div>
+
+
+
+    <div class="stat-card">
+
+        <div class="stat-top">
+
+            <div class="stat-title">
+                Port Scans
+            </div>
+
+            <div class="stat-icon">
+                🔎
+            </div>
+
+        </div>
+
+        <div
+            class="stat-value"
+            id="portscan">
+
+            0
+
+        </div>
+
+        <div class="stat-sub">
+            Scanning activity detected
+        </div>
+
+    </div>
+
+
+</section>
+
+
+
+<!-- =====================================================
+     CONTENT
+===================================================== -->
+
+<section class="content-grid">
+
+
+<!-- TRAFFIC GRAPH -->
+
+<div class="panel">
+
+    <div class="panel-header">
+
+        <h2>
+            Network Activity
+        </h2>
+
+        <span>
+            Live monitoring
+        </span>
+
+    </div>
+
+
+    <div
+        class="chart"
+        id="trafficChart">
+    </div>
+
+</div>
+
+
+
+<!-- THREAT OVERVIEW -->
+
+<div class="panel">
+
+    <div class="panel-header">
+
+        <h2>
+            Threat Overview
+        </h2>
+
+        <span>
+            Current
+        </span>
+
+    </div>
+
+
+    <div class="threat-list">
+
+
+        <div class="threat-item">
+
+            <div class="threat-info">
+
+                <div class="threat-circle">
+                    ⚡
+                </div>
+
+                <div>
+
+                    <div class="threat-name">
+                        DDoS
+                    </div>
+
+                    <div class="progress">
+
+                        <span
+                            id="ddosBar"
+                            style="width:0%">
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div
+                class="threat-count"
+                id="ddosCount">
+
+                0
+
+            </div>
+
+        </div>
+
+
+
+        <div class="threat-item">
+
+            <div class="threat-info">
+
+                <div class="threat-circle">
+                    🔎
+                </div>
+
+                <div>
+
+                    <div class="threat-name">
+                        PortScan
+                    </div>
+
+                    <div class="progress">
+
+                        <span
+                            id="scanBar"
+                            style="width:0%">
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div
+                class="threat-count"
+                id="scanCount">
+
+                0
+
+            </div>
+
+        </div>
+
+
+
+        <div class="threat-item">
+
+            <div class="threat-info">
+
+                <div class="threat-circle">
+                    🟢
+                </div>
+
+                <div>
+
+                    <div class="threat-name">
+                        Benign
+                    </div>
+
+                    <div class="progress">
+
+                        <span
+                            id="benignBar"
+                            style="width:0%">
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div
+                class="threat-count"
+                id="benignCount">
+
+                0
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- XAI SUMMARY -->
+
+    <div class="xai-box">
+
+        <div class="xai-title">
+
+            🧠 Explainable AI
+
+        </div>
+
+        <div
+            class="xai-text"
+            id="xaiText">
+
+            Click an attack alert or use
+            "AI Explanation" to view the
+            latest AI explanation.
+
+        </div>
+
+    </div>
+
+</div>
+
+</section>
+
+
+
+<!-- =====================================================
+     ALERTS
+===================================================== -->
+
+<section
+    class="panel alerts-panel"
+    id="alertsSection">
+
+    <div class="panel-header">
+
+        <h2>
+            🚨 Recent Security Alerts
+        </h2>
+
+        <span>
+            Auto-refresh: 5 seconds
+        </span>
+
+    </div>
+
+
+    <div class="button-row">
+
+        <button
+            class="btn btn-blue"
+            onclick="loadEverything()">
+
+            🔄 Refresh
+
+        </button>
+
+
+        <button
+            class="btn btn-gray"
+            onclick="showHistory()">
+
+            📜 View Full History
+
+        </button>
+
+    </div>
+
+
+    <div id="alerts">
+
+        <div class="alert">
+
+            <div class="alert-icon">
+                ⏳
+            </div>
+
+            <div class="alert-main">
+
+                <strong>
+                    Loading security events...
+                </strong>
+
+                <p>
+                    Connecting to AI-NIDS backend.
+                </p>
+
+            </div>
+
+            <span class="severity low">
+                READY
+            </span>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- FOOTER -->
+
+<div class="footer">
+
+    AI-NIDS • Intelligent Network Intrusion
+    Detection and Response System
+
+</div>
+
+
+</main>
+
+</div>
+
+
+
+<!-- =====================================================
+     HISTORY MODAL
+===================================================== -->
+
+<div
+    class="modal"
+    id="historyModal">
+
+    <div class="modal-box">
+
+        <div class="modal-header">
+
+            <h2>
+                📜 Attack History
+            </h2>
+
+            <button
+                class="close-btn"
+                onclick="closeModal('historyModal')">
+
+                ×
+
+            </button>
+
+        </div>
+
+
+        <div class="button-row">
+
+            <button
+                class="btn btn-blue"
+                onclick="loadHistoryModal()">
+
+                🔄 Refresh History
+
+            </button>
+
+        </div>
+
+
+        <div
+            id="historyContent">
+
+            Loading...
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     ATTACK DETAILS MODAL
+===================================================== -->
+
+<div
+    class="modal"
+    id="detailsModal">
+
+    <div class="modal-box">
+
+        <div class="modal-header">
+
+            <h2 id="detailsTitle">
+                🚨 Attack Details
+            </h2>
+
+            <button
+                class="close-btn"
+                onclick="closeModal('detailsModal')">
+
+                ×
+
+            </button>
+
+        </div>
+
+
+        <div
+            id="detailsContent">
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<script>
+
+
+/* =========================================================
+   CHART
+========================================================= */
+
+function createChart() {
+
+    const chart =
+        document.getElementById(
+            "trafficChart"
+        );
+
+    chart.innerHTML = "";
+
+
+    for(
+        let i = 0;
+        i < 28;
+        i++
+    ) {
+
+        const bar =
+            document.createElement(
+                "div"
+            );
+
+
+        const value =
+            Math.floor(
+                Math.random() * 85
+            ) + 15;
+
+
+        bar.className = "bar";
+
+        bar.style.height =
+            value + "%";
+
+        bar.setAttribute(
+            "data-value",
+            value
+        );
+
+
+        chart.appendChild(
+            bar
+        );
+
+    }
+
+}
+
+
+createChart();
+
+
+
+/* =========================================================
+   ANIMATE GRAPH
+========================================================= */
+
+setInterval(
+    function() {
+
+        const bars =
+            document.querySelectorAll(
+                ".bar"
+            );
+
+
+        bars.forEach(
+            function(bar) {
+
+                const value =
+                    Math.floor(
+                        Math.random() * 85
+                    ) + 15;
+
+
+                bar.style.height =
+                    value + "%";
+
+
+                bar.setAttribute(
+                    "data-value",
+                    value
+                );
+
+            }
+        );
+
+    },
+    2500
+);
+
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+async function loadStatus() {
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/status"
+            );
+
+
+        if(!response.ok) {
+
+            throw new Error(
+                "Backend unavailable"
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        document.getElementById(
+            "systemStatus"
+        ).textContent =
+            "System Online";
+
+
+        document.getElementById(
+            "statusDot"
+        ).style.background =
+            "#22c55e";
+
+
+    }
+
+    catch(error) {
+
+        document.getElementById(
+            "systemStatus"
+        ).textContent =
+            "Backend Offline";
+
+
+        document.getElementById(
+            "statusDot"
+        ).style.background =
+            "#ef4444";
+
+    }
+
+}
+
+
+
+/* =========================================================
+   LOAD ATTACKS
+========================================================= */
+
+async function loadAttacks() {
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/attacks"
+            );
+
+
+        if(!response.ok) {
+
+            throw new Error(
+                "Attack API failed"
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if(!Array.isArray(data)) {
+
+            throw new Error(
+                "Invalid attack data"
+            );
+
+        }
+
+
+        let ddos = 0;
+
+        let portscan = 0;
+
+        let benign = 0;
+
+
+        data.forEach(
+            function(item) {
+
+                const type =
+                    String(
+                        item.attack_type || ""
+                    ).toUpperCase();
+
+
+                if(type === "DDOS") {
+
+                    ddos++;
+
+                }
+
+                else if(
+                    type === "PORTSCAN"
+                ) {
+
+                    portscan++;
+
+                }
+
+                else {
+
+                    benign++;
+
+                }
+
+            }
+        );
+
+
+        const threats =
+            ddos + portscan;
+
+
+        document.getElementById(
+            "totalEvents"
+        ).textContent =
+            data.length;
+
+
+        document.getElementById(
+            "threats"
+        ).textContent =
+            threats;
+
+
+        document.getElementById(
+            "ddos"
+        ).textContent =
+            ddos;
+
+
+        document.getElementById(
+            "portscan"
+        ).textContent =
+            portscan;
+
+
+        document.getElementById(
+            "ddosCount"
+        ).textContent =
+            ddos;
+
+
+        document.getElementById(
+            "scanCount"
+        ).textContent =
+            portscan;
+
+
+        document.getElementById(
+            "benignCount"
+        ).textContent =
+            benign;
+
+
+        const total =
+            Math.max(
+                data.length,
+                1
+            );
+
+
+        document.getElementById(
+            "ddosBar"
+        ).style.width =
+            (
+                ddos / total * 100
+            ) + "%";
+
+
+        document.getElementById(
+            "scanBar"
+        ).style.width =
+            (
+                portscan / total * 100
+            ) + "%";
+
+
+        document.getElementById(
+            "benignBar"
+        ).style.width =
+            (
+                benign / total * 100
+            ) + "%";
+
+
+        updateAlerts(data);
+
+    }
+
+    catch(error) {
+
+        console.error(
+            "Attack loading error:",
+            error
+        );
+
+    }
+
+}
+
+
+
+/* =========================================================
+   ALERTS
+========================================================= */
+
+function updateAlerts(data) {
+
+    const container =
+        document.getElementById(
+            "alerts"
+        );
+
+
+    if(
+        !data ||
+        data.length === 0
+    ) {
+
+        container.innerHTML = `
+
+            <div class="alert">
+
+                <div class="alert-icon">
+                    ✓
+                </div>
+
+                <div class="alert-main">
+
+                    <strong>
+                        No security events
+                    </strong>
+
+                    <p>
+                        AI-NIDS is monitoring network traffic.
+                    </p>
+
+                </div>
+
+                <span class="severity low">
+                    NORMAL
+                </span>
+
+            </div>
+
+        `;
+
+
+        document.getElementById(
+            "xaiText"
+        ).textContent =
+            "No attack records are currently available.";
+
+        return;
+
+    }
+
+
+    container.innerHTML = "";
+
+
+    data.slice(
+        0,
+        5
+    ).forEach(
+        function(item) {
+
+
+            const type =
+                item.attack_type ||
+                "Unknown";
+
+
+            const severity =
+                String(
+                    item.severity ||
+                    "Medium"
+                );
+
+
+            let severityClass =
+                severity.toLowerCase();
+
+
+            if(
+                ![
+                    "critical",
+                    "high",
+                    "medium",
+                    "low"
+                ].includes(
+                    severityClass
+                )
+            ) {
+
+                severityClass =
+                    "medium";
+
+            }
+
+
+            const div =
+                document.createElement(
+                    "div"
+                );
+
+
+            div.className =
+                "alert";
+
+
+            div.innerHTML = `
+
+                <div class="alert-icon">
+                    🚨
+                </div>
+
+                <div class="alert-main">
+
+                    <strong>
+                        ${escapeHTML(type)}
+                        detected
+                    </strong>
+
+                    <p>
+
+                        Source:
+                        ${escapeHTML(
+                            item.source_ip || "-"
+                        )}
+
+                        &nbsp; • &nbsp;
+
+                        Confidence:
+                        ${
+                            Number(
+                                item.confidence || 0
+                            ).toFixed(1)
+                        }%
+
+                    </p>
+
+                </div>
+
+                <span
+                    class="severity ${severityClass}">
+
+                    ${escapeHTML(
+                        severity.toUpperCase()
+                    )}
+
+                </span>
+
+            `;
+
+
+            div.onclick =
+                function() {
+
+                    showAttackDetails(
+                        item
+                    );
+
+                };
+
+
+            container.appendChild(
+                div
+            );
+
+        }
+    );
+
+
+    const latest =
+        data[0];
+
+
+    document.getElementById(
+        "xaiText"
+    ).textContent =
+
+        latest.attack_type
+
+        ?
+
+        `${latest.attack_type} activity detected from ${
+            latest.source_ip || "unknown source"
+        }. Click the alert to view detailed AI analysis.`
+
+        :
+
+        "AI-NIDS is monitoring network traffic.";
+
+}
+
+
+
+/* =========================================================
+   SHOW ATTACK HISTORY
+========================================================= */
+
+async function showHistory() {
+
+    document.getElementById(
+        "historyModal"
+    ).classList.add(
+        "show"
+    );
+
+
+    await loadHistoryModal();
+
+}
+
+
+
+/* =========================================================
+   LOAD HISTORY MODAL
+========================================================= */
+
+async function loadHistoryModal() {
+
+    const container =
+        document.getElementById(
+            "historyContent"
+        );
+
+
+    container.innerHTML = `
+        <p style="
+            color:#64748b;
+            padding:20px;
+        ">
+            Loading attack history...
+        </p>
+    `;
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/attacks"
+            );
+
+
+        if(!response.ok) {
+
+            throw new Error(
+                "Unable to load history"
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if(
+            !Array.isArray(data) ||
+            data.length === 0
+        ) {
+
+            container.innerHTML = `
+
+                <div style="
+                    padding:30px;
+                    text-align:center;
+                    color:#64748b;
+                ">
+
+                    ✓ No attack records available.
+
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        let rows = "";
+
+
+        data.forEach(
+            function(item) {
+
+                const type =
+                    item.attack_type ||
+                    "Unknown";
+
+
+                let typeClass =
+                    "type-benign";
+
+
+                if(
+                    type.toUpperCase()
+                    === "DDOS"
+                ) {
+
+                    typeClass =
+                        "type-ddos";
+
+                }
+
+                else if(
+                    type.toUpperCase()
+                    === "PORTSCAN"
+                ) {
+
+                    typeClass =
+                        "type-portscan";
+
+                }
+
+
+                rows += `
+
+                    <tr
+                        onclick='showAttackDetails(${JSON.stringify(item)})'>
+
+                        <td>
+                            ${escapeHTML(
+                                item.timestamp || "-"
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHTML(
+                                item.source_ip || "-"
+                            )}
+                        </td>
+
+                        <td class="${typeClass}">
+                            ${escapeHTML(type)}
+                        </td>
+
+                        <td>
+                            ${
+                                Number(
+                                    item.confidence || 0
+                                ).toFixed(1)
+                            }%
+                        </td>
+
+                        <td>
+                            ${escapeHTML(
+                                item.severity || "-"
+                            )}
+                        </td>
+
+                        <td>
+                            <button
+                                class="btn btn-blue"
+                                style="
+                                    padding:6px 10px;
+                                    font-size:10px;
+                                "
+                                onclick="event.stopPropagation(); showAttackDetails(${JSON.stringify(item)})">
+
+                                View
+
+                            </button>
+                        </td>
+
+                    </tr>
+
+                `;
+
+            }
+        );
+
+
+        container.innerHTML = `
+
+            <div style="
+                overflow-x:auto;
+            ">
+
+                <table class="history-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Time
+                            </th>
+
+                            <th>
+                                Source IP
+                            </th>
+
+                            <th>
+                                Attack
+                            </th>
+
+                            <th>
+                                Confidence
+                            </th>
+
+                            <th>
+                                Severity
+                            </th>
+
+                            <th>
+                                Details
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        ${rows}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        `;
+
+    }
+
+    catch(error) {
+
+        console.error(
+            error
+        );
+
+
+        container.innerHTML = `
+
+            <div style="
+                padding:20px;
+                color:#f87171;
+            ">
+
+                Unable to load attack history.
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+
+/* =========================================================
+   ATTACK DETAILS
+========================================================= */
+
+async function showAttackDetails(
+    attack
+) {
+
+    const modal =
+        document.getElementById(
+            "detailsModal"
+        );
+
+
+    const container =
+        document.getElementById(
+            "detailsContent"
+        );
+
+
+    modal.classList.add(
+        "show"
+    );
+
+    const title = document.getElementById("detailsTitle");
+
+    if(title) {
+        title.textContent =
+            attack && attack.id !== undefined
+                ? "🚨 Attack Details #" + attack.id
+                : "🚨 Attack Details";
+    }
+
+
+    container.innerHTML = `
+
+        <div style="
+            text-align:center;
+            padding:30px;
+            color:#64748b;
+        ">
+
+            <div style="
+                font-size:30px;
+                margin-bottom:10px;
+            ">
+                🧠
+            </div>
+
+            Loading AI explanation...
+
+        </div>
+
+    `;
+
+
+    try {
+
+        const attackId = attack && attack.id;
+
+        const xaiUrl = attackId !== undefined &&
+                       attackId !== null &&
+                       String(attackId).trim() !== ""
+            ? "/api/xai?id=" + encodeURIComponent(attackId)
+            : "/api/xai";
+
+        const response =
+            await fetch(
+                xaiUrl,
+                {
+                    cache: "no-store"
+                }
+            );
+
+
+        if(!response.ok) {
+
+            throw new Error(
+                "XAI API unavailable"
+            );
+
+        }
+
+
+        const xai =
+            await response.json();
+
+
+        if(!xai.success) {
+
+            throw new Error(
+                xai.message ||
+                "XAI explanation unavailable"
+            );
+
+        }
+
+
+        const explanation =
+            xai.explanation || {};
+
+
+        const features =
+            explanation.top_features || [];
+
+
+        let featureHTML = "";
+
+
+        if(
+            features.length === 0
+        ) {
+
+            featureHTML = `
+
+                <p style="
+                    color:#64748b;
+                ">
+                    No feature explanation available.
+                </p>
+
+            `;
+
+        }
+
+        else {
+
+            const maxImpact =
+                Math.max(
+                    ...features.map(
+                        function(f) {
+
+                            return Math.abs(
+                                Number(
+                                    f.absolute_impact || 0
+                                )
+                            );
+
+                        }
+                    ),
+                    0.0001
+                );
+
+
+            features.forEach(
+                function(feature) {
+
+                    const impact =
+                        Math.abs(
+                            Number(
+                                feature.absolute_impact || 0
+                            )
+                        );
+
+
+                    const width =
+                        Math.max(
+                            5,
+                            (
+                                impact /
+                                maxImpact
+                            ) * 100
+                        );
+
+
+                    featureHTML += `
+
+                        <div class="feature">
+
+                            <div class="feature-top">
+
+                                <span class="feature-name">
+
+                                    ${escapeHTML(
+                                        feature.feature ||
+                                        "Unknown feature"
+                                    )}
+
+                                </span>
+
+                                <span class="feature-value">
+
+                                    ${impact.toFixed(4)}
+
+                                </span>
+
+                            </div>
+
+
+                            <div class="feature-bar">
+
+                                <div
+                                    class="feature-fill"
+                                    style="
+                                        width:${width}%;
+                                    ">
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    `;
+
+                }
+            );
+
+        }
+
+
+        const attackType =
+            attack.attack_type ||
+            xai.attack_type ||
+            "Unknown";
+
+
+        container.innerHTML = `
+
+            <div class="detail-grid">
+
+
+                <div class="detail-card">
+
+                    <small>
+                        Attack Type
+                    </small>
+
+                    <strong>
+                        ${escapeHTML(
+                            attackType
+                        )}
+                    </strong>
+
+                </div>
+
+
+                <div class="detail-card">
+
+                    <small>
+                        AI Prediction
+                    </small>
+
+                    <strong>
+                        ${escapeHTML(
+                            xai.prediction ||
+                            explanation.prediction ||
+                            "-"
+                        )}
+                    </strong>
+
+                </div>
+
+
+                <div class="detail-card">
+
+                    <small>
+                        Confidence
+                    </small>
+
+                    <strong>
+                        ${
+                            Number(
+                                xai.confidence ??
+                                attack.confidence ??
+                                0
+                            ).toFixed(2)
+                        }%
+                    </strong>
+
+                </div>
+
+
+                <div class="detail-card">
+
+                    <small>
+                        Risk Score
+                    </small>
+
+                    <strong>
+                        ${
+                            xai.risk_score ??
+                            attack.risk_score ??
+                            0
+                        } / 100
+                    </strong>
+
+                </div>
+
+
+                <div class="detail-card">
+
+                    <small>
+                        Severity
+                    </small>
+
+                    <strong>
+                        ${escapeHTML(
+                            xai.severity ||
+                            attack.severity ||
+                            "-"
+                        )}
+                    </strong>
+
+                </div>
+
+
+                <div class="detail-card">
+
+                    <small>
+                        Protocol
+                    </small>
+
+                    <strong>
+                        ${escapeHTML(
+                            attack.protocol ||
+                            xai.protocol ||
+                            "-"
+                        )}
+                    </strong>
+
+                </div>
+
+
+                <div class="detail-card">
+
+                    <small>
+                        Source IP
+                    </small>
+
+                    <strong>
+                        ${escapeHTML(
+                            attack.source_ip ||
+                            xai.source_ip ||
+                            "-"
+                        )}
+                    </strong>
+
+                </div>
+
+
+                <div class="detail-card">
+
+                    <small>
+                        Destination IP
+                    </small>
+
+                    <strong>
+                        ${escapeHTML(
+                            attack.destination_ip ||
+                            xai.destination_ip ||
+                            "-"
+                        )}
+                    </strong>
+
+                </div>
+
+
+                <div class="detail-card">
+
+                    <small>
+                        Source Port
+                    </small>
+
+                    <strong>
+                        ${escapeHTML(
+                            String(
+                                attack.source_port ||
+                                xai.source_port ||
+                                "-"
+                            )
+                        )}
+                    </strong>
+
+                </div>
+
+
+                <div class="detail-card">
+
+                    <small>
+                        Destination Port
+                    </small>
+
+                    <strong>
+                        ${escapeHTML(
+                            String(
+                                attack.destination_port ||
+                                xai.destination_port ||
+                                "-"
+                            )
+                        )}
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+
+            <h3 style="
+                color:white;
+                margin-bottom:15px;
+                font-size:16px;
+            ">
+
+                🧠 Top AI-Contributing Features
+
+            </h3>
+
+
+            ${featureHTML}
+
+
+            <div class="recommendation">
+
+                <strong style="
+                    display:block;
+                    color:#60a5fa;
+                    margin-bottom:8px;
+                ">
+
+                    🛡️ Security Recommendation
+
+                </strong>
+
+                ${escapeHTML(
+                    attack.recommendation ||
+                    xai.recommendation ||
+                    "Investigate the detected network activity."
+                )}
+
+            </div>
+
+        `;
+
+
+        document.getElementById(
+            "xaiText"
+        ).textContent =
+
+            `${attackType} detected with ${
+                Number(
+                    xai.confidence ||
+                    attack.confidence ||
+                    0
+                ).toFixed(1)
+            }% confidence. Top contributing network features are shown in the attack details.`;
+
+    }
+
+    catch(error) {
+
+        console.error(
+            "XAI error:",
+            error
+        );
+
+
+        container.innerHTML = `
+
+            <div style="
+                padding:25px;
+                color:#f87171;
+            ">
+
+                <h3>
+                    ⚠️ XAI Explanation Unavailable
+                </h3>
+
+                <p style="
+                    margin-top:10px;
+                    color:#94a3b8;
+                ">
+
+                    ${
+                        escapeHTML(
+                            error.message
+                        )
+                    }
+
+                </p>
+
+                <p style="
+                    margin-top:10px;
+                    color:#64748b;
+                ">
+
+                    Make sure the Flask backend
+                    and /api/xai endpoint are running.
+
+                </p>
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+
+/* =========================================================
+   LATEST XAI
+========================================================= */
+
+async function showLatestXAI() {
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/attacks"
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if(
+            !Array.isArray(data) ||
+            data.length === 0
+        ) {
+
+            alert(
+                "No attack records are available."
+            );
+
+            return;
+
+        }
+
+
+        showAttackDetails(
+            data[0]
+        );
+
+    }
+
+    catch(error) {
+
+        alert(
+            "Unable to load latest attack."
+        );
+
+    }
+
+}
+
+
+
+/* =========================================================
+   REFRESH EVERYTHING
+========================================================= */
+
+function loadEverything() {
+
+    loadStatus();
+
+    loadAttacks();
+
+}
+
+
+
+/* =========================================================
+   SCROLL
+========================================================= */
+
+function scrollToSection(
+    id
+) {
+
+    const element =
+        document.getElementById(
+            id
+        );
+
+
+    if(element) {
+
+        element.scrollIntoView({
+            behavior: "smooth"
+        });
+
+    }
+
+}
+
+
+
+/* =========================================================
+   CLOSE MODAL
+========================================================= */
+
+function closeModal(
+    id
+) {
+
+    const modal =
+        document.getElementById(
+            id
+        );
+
+
+    if(modal) {
+
+        modal.classList.remove(
+            "show"
+        );
+
+    }
+
+}
+
+
+
+/* =========================================================
+   CLOSE WHEN CLICKING OUTSIDE
+========================================================= */
+
+document
+    .querySelectorAll(".modal")
+    .forEach(
+        function(modal) {
+
+            modal.addEventListener(
+                "click",
+                function(event) {
+
+                    if(
+                        event.target === modal
+                    ) {
+
+                        modal.classList.remove(
+                            "show"
+                        );
+
+                    }
+
+                }
+            );
+
+        }
+    );
+
+
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
+
+function escapeHTML(
+    value
+) {
+
+    const div =
+        document.createElement(
+            "div"
+        );
+
+
+    div.textContent =
+        String(
+            value ?? ""
+        );
+
+
+    return div.innerHTML;
+
+}
+
+
+
+/* =========================================================
+   START DASHBOARD
+========================================================= */
+
+loadEverything();
+
+
+
+/* =========================================================
+   AUTO REFRESH
+========================================================= */
+
+setInterval(
+    loadEverything,
+    5000
+);
+
+</script>
+
+
+</body>
+
+</html>

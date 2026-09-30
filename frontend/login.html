@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI-NIDS | Secure Login</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+
+            background:
+                radial-gradient(circle at 20% 20%,
+                    rgba(37, 99, 235, 0.25),
+                    transparent 30%),
+                radial-gradient(circle at 80% 80%,
+                    rgba(6, 182, 212, 0.20),
+                    transparent 30%),
+                #050b16;
+        }
+
+        /* Background grid */
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+
+            background-image:
+                linear-gradient(
+                    rgba(59, 130, 246, 0.04) 1px,
+                    transparent 1px
+                ),
+                linear-gradient(
+                    90deg,
+                    rgba(59, 130, 246, 0.04) 1px,
+                    transparent 1px
+                );
+
+            background-size: 45px 45px;
+
+            pointer-events: none;
+        }
+
+        .wrapper {
+            width: 100%;
+            max-width: 460px;
+            padding: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .brand {
+            text-align: center;
+            margin-bottom: 22px;
+        }
+
+        .shield {
+            width: 75px;
+            height: 75px;
+            margin: auto;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 22px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #2563eb,
+                    #06b6d4
+                );
+
+            box-shadow:
+                0 0 35px rgba(37, 99, 235, 0.35);
+
+            font-size: 40px;
+        }
+
+        .brand h1 {
+            margin-top: 15px;
+            font-size: 30px;
+            letter-spacing: 2px;
+        }
+
+        .brand p {
+            margin-top: 7px;
+            color: #8ea0b8;
+            font-size: 13px;
+        }
+
+        .login-card {
+            background:
+                rgba(12, 22, 39, 0.96);
+
+            border:
+                1px solid rgba(148, 163, 184, 0.14);
+
+            border-radius: 20px;
+
+            padding: 32px;
+
+            box-shadow:
+                0 25px 70px rgba(0, 0, 0, 0.5),
+                inset 0 1px rgba(255,255,255,0.04);
+
+            backdrop-filter: blur(15px);
+        }
+
+        .card-header {
+            margin-bottom: 25px;
+        }
+
+        .card-header h2 {
+            font-size: 21px;
+            margin-bottom: 7px;
+        }
+
+        .card-header p {
+            color: #7f91aa;
+            font-size: 13px;
+        }
+
+        .input-group {
+            margin-bottom: 19px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #cbd5e1;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .input-box {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 16px;
+            opacity: 0.7;
+        }
+
+        input {
+            width: 100%;
+            height: 48px;
+
+            padding: 0 45px;
+
+            border-radius: 10px;
+
+            border:
+                1px solid #26364d;
+
+            background:
+                #081221;
+
+            color: #fff;
+
+            outline: none;
+
+            font-size: 14px;
+
+            transition: 0.2s;
+        }
+
+        input::placeholder {
+            color: #506078;
+        }
+
+        input:focus {
+            border-color: #3b82f6;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(59,130,246,0.12);
+        }
+
+        .show-password {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+
+            transform: translateY(-50%);
+
+            cursor: pointer;
+
+            color: #718198;
+
+            font-size: 15px;
+        }
+
+        .login-btn {
+            width: 100%;
+            height: 50px;
+
+            border: none;
+            border-radius: 10px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #2563eb,
+                    #0891b2
+                );
+
+            color: white;
+
+            font-size: 15px;
+            font-weight: bold;
+
+            cursor: pointer;
+
+            margin-top: 5px;
+
+            transition: 0.2s;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 12px 30px
+                rgba(37,99,235,0.28);
+        }
+
+        .login-btn:disabled {
+            opacity: 0.65;
+            cursor: wait;
+            transform: none;
+        }
+
+        .message {
+            min-height: 20px;
+
+            text-align: center;
+
+            margin-top: 15px;
+
+            font-size: 13px;
+        }
+
+        .security-status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            gap: 8px;
+
+            margin-top: 24px;
+
+            padding-top: 20px;
+
+            border-top:
+                1px solid rgba(148,163,184,0.1);
+
+            color: #7dd3fc;
+
+            font-size: 12px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+
+            border-radius: 50%;
+
+            background: #22c55e;
+
+            box-shadow:
+                0 0 10px #22c55e;
+        }
+
+        .footer {
+            text-align: center;
+
+            margin-top: 20px;
+
+            color: #506078;
+
+            font-size: 11px;
+        }
+
+        @media(max-width: 500px) {
+
+            .login-card {
+                padding: 25px;
+            }
+
+            .brand h1 {
+                font-size: 26px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="wrapper">
+
+    <div class="brand">
+
+        <div class="shield">
+            🛡️
+        </div>
+
+        <h1>AI-NIDS</h1>
+
+        <p>
+            INTELLIGENT NETWORK SECURITY CENTER
+        </p>
+
+    </div>
+
+
+    <div class="login-card">
+
+        <div class="card-header">
+
+            <h2>
+                🔐 Secure Login
+            </h2>
+
+            <p>
+                Sign in to access the AI-NIDS monitoring dashboard.
+            </p>
+
+        </div>
+
+
+        <form id="loginForm">
+
+            <div class="input-group">
+
+                <label>
+                    Username
+                </label>
+
+                <div class="input-box">
+
+                    <span class="input-icon">
+                        👤
+                    </span>
+
+                    <input
+                        type="text"
+                        id="username"
+                        placeholder="Enter your username"
+                        autocomplete="username"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div class="input-group">
+
+                <label>
+                    Password
+                </label>
+
+                <div class="input-box">
+
+                    <span class="input-icon">
+                        🔑
+                    </span>
+
+                    <input
+                        type="password"
+                        id="password"
+                        placeholder="Enter your password"
+                        autocomplete="current-password"
+                        required
+                    >
+
+                    <span
+                        class="show-password"
+                        id="showPassword">
+                        👁️
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="login-btn"
+                id="loginButton">
+
+                🔓 SIGN IN
+
+            </button>
+
+        </form>
+
+
+        <div
+            id="message"
+            class="message">
+        </div>
+
+
+        <div class="security-status">
+
+            <span class="status-dot"></span>
+
+            Two-step verification protected
+
+        </div>
+
+    </div>
+
+
+    <div class="footer">
+
+        AI-Based Intelligent Network Intrusion Detection and Response System
+
+    </div>
+
+</div>
+
+
+<script>
+
+const loginForm =
+    document.getElementById("loginForm");
+
+const loginButton =
+    document.getElementById("loginButton");
+
+const message =
+    document.getElementById("message");
+
+
+/* Show / hide password */
+
+document
+    .getElementById("showPassword")
+    .addEventListener("click", function() {
+
+        const password =
+            document.getElementById("password");
+
+        if(password.type === "password") {
+
+            password.type = "text";
+
+            this.textContent = "🙈";
+
+        } else {
+
+            password.type = "password";
+
+            this.textContent = "👁️";
+
+        }
+
+    });
+
+
+/* Login */
+
+loginForm.addEventListener(
+    "submit",
+    async function(event) {
+
+        event.preventDefault();
+
+
+        const username =
+            document
+            .getElementById("username")
+            .value
+            .trim();
+
+
+        const password =
+            document
+            .getElementById("password")
+            .value;
+
+
+        message.textContent =
+            "Authenticating...";
+
+        message.style.color =
+            "#facc15";
+
+
+        loginButton.disabled = true;
+
+        loginButton.textContent =
+            "⏳ AUTHENTICATING...";
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/login",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body: JSON.stringify({
+                            username: username,
+                            password: password
+                        })
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if(data.success) {
+
+                sessionStorage.setItem(
+                    "login_verified",
+                    "false"
+                );
+
+                sessionStorage.setItem(
+                    "username",
+                    username
+                );
+
+
+                message.textContent =
+                    "Login successful. Redirecting...";
+
+                message.style.color =
+                    "#4ade80";
+
+
+                setTimeout(
+                    function() {
+
+                        window.location.href =
+                            "/otp";
+
+                    },
+                    500
+                );
+
+            }
+
+            else {
+
+                message.textContent =
+                    data.message ||
+                    "Invalid username or password.";
+
+                message.style.color =
+                    "#f87171";
+
+                loginButton.disabled =
+                    false;
+
+                loginButton.textContent =
+                    "🔓 SIGN IN";
+
+            }
+
+        }
+
+        catch(error) {
+
+            console.error(error);
+
+            message.textContent =
+                "Cannot connect to AI-NIDS server.";
+
+            message.style.color =
+                "#f87171";
+
+            loginButton.disabled =
+                false;
+
+            loginButton.textContent =
+                "🔓 SIGN IN";
+
+        }
+
+    }
+);
+
+</script>
+
+</body>
+</html>
